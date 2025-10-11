@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau des Affectations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .table-container {
+            padding: 30px;
+            overflow-x: auto;
+        }
+
+        .assignments-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .assignments-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .assignments-table th:first-child {
+            width: 25%;
+        }
+
+         .assignments-table th:nth-child(2) {
+             width: 60%;
+         }
+
+         .assignments-table th:last-child {
+             width: 15%;
+             text-align: center;
+         }
+
+        .assignments-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        .assignments-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .assignments-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .name-cell {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.05em;
+        }
+
+        .assignments-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .assignment-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .assignment-item:last-child {
+            margin-bottom: 0;
+        }
+
+         .assignment-date {
+             font-weight: bold;
+             color: #495057;
+             display: inline;
+         }
+
+         .assignment-time {
+             color: #6c757d;
+             font-style: italic;
+             margin-left: 8px;
+         }
+
+         .assignment-partner {
+             color: #0c5460;
+             font-style: italic;
+             font-size: 0.85em;
+             display: block;
+             margin-top: 2px;
+         }
+
+         .assignment-partner.no-partner {
+             color: #dc3545;
+         }
+
+
+        .count-cell {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            border-radius: 6px;
+            color: white;
+        }
+
+        /* Couleurs selon le nombre d'affectations */
+        .count-red {
+            background-color: #dc3545;
+        }
+
+         .count-orange {
+             background-color: #90EE90;
+         }
+
+        .count-green {
+            background-color: #28a745;
+        }
+
+        .count-blue {
+            background-color: #007bff;
+        }
+
+        .legend {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border: 1px solid #dee2e6;
+        }
+
+        .legend h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            width: 25px;
+            height: 25px;
+            border-radius: 4px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .legend-color.red {
+            background-color: #dc3545;
+        }
+
+         .legend-color.orange {
+             background-color: #90EE90;
+         }
+
+        .legend-color.green {
+            background-color: #28a745;
+        }
+
+        .legend-color.blue {
+            background-color: #007bff;
+        }
+
+        .stats {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .stats h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1976d2;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        /* Styles pour l'impression */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                max-width: none;
+                margin: 0;
+            }
+
+            .header {
+                display: none;
+            }
+
+            .legend {
+                display: none;
+            }
+
+            .table-container {
+                padding: 0;
+            }
+
+            .assignments-table {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .assignments-table th,
+            .assignments-table td {
+                border: 1px solid #333;
+            }
+
+            .count-cell {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .table-container {
+                padding: 15px;
+            }
+
+            .assignments-table th,
+            .assignments-table td {
+                padding: 8px 10px;
+                font-size: 0.9em;
+            }
+
+            .legend-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Tableau des Affectations</h1>
+            <p>Opération King Jouet 2025 🦁👑</p>
+        </div>
+        
+        <div class="table-container">
+            <div class="stats" id="stats">
+                <!-- Les statistiques seront générées ici -->
+            </div>
+            
+            <table class="assignments-table" id="assignments-table">
+                 <thead>
+                     <tr>
+                         <th>Nom</th>
+                         <th>Affectations</th>
+                         <th>Nombre d'affectations</th>
+                     </tr>
+                 </thead>
+                <tbody id="assignments-tbody">
+                    <!-- Le tableau sera généré ici -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="legend">
+            <h3>Légende des couleurs</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="legend-color red">0-2</div>
+                    <span>0 à 2 affectations</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color orange">3</div>
+                    <span>3 affectations</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color green">4</div>
+                    <span>4 affectations</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color blue">5+</div>
+                    <span>5 affectations et plus</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Données CSV intégrées (mêmes données que planning.html)
+        const csvData = `lundi 27 octobre 2025;10h-13h;PETIT-LAURENT Tom;UV4
+lundi 27 octobre 2025;13h-16h;GOMEZ Téo;UV3
+lundi 27 octobre 2025;16h-19h;FOURNEL Baptiste;UV3
+mardi 28 octobre 2025;10h-13h;ETTOUHAMI Elias;UV4
+mardi 28 octobre 2025;13h-16h;SAINT PIERRE Leïna;UV2
+mardi 28 octobre 2025;16h-19h;PONTET Alison;UV3
+mercredi 29 octobre 2025;10h-13h;PECHARD Margot;UV2
+mercredi 29 octobre 2025;13h-16h;PITOUT Mahé;UV3
+mercredi 29 octobre 2025;16h-19h;PONTET Alison;UV3
+jeudi 30 octobre 2025;10h-13h;PETIT-LAURENT Tom;UV4
+jeudi 30 octobre 2025;13h-16h;FOURNEL Baptiste;UV3
+jeudi 30 octobre 2025;16h-19h;SAINT PIERRE Leïna;UV2
+vendredi 31 octobre 2025;10h-13h;CERNIN Nathan;UV3
+vendredi 31 octobre 2025;13h-16h;GIRARDIN Théo Paul;UV2
+vendredi 31 octobre 2025;16h-19h;ETTOUHAMI Elias;UV4
+samedi 01 novembre 2025;10h-13h;PECHARD Margot;UV2
+samedi 01 novembre 2025;10h-13h;BLAY Thimothée;UV4
+samedi 01 novembre 2025;13h-16h;BLANC Matis;UV1
+samedi 01 novembre 2025;13h-16h;PITOUT Mahé;UV3
+samedi 01 novembre 2025;16h-19h;BOTH Ambroisine;UV2
+samedi 01 novembre 2025;16h-19h;FRANÇOIS Corto;UV3
+mercredi 05 novembre 2025;13h-16h;HERAUD Eléonore;UV3
+mercredi 05 novembre 2025;13h-16h;NASTRAN Loris;UV1
+mercredi 05 novembre 2025;16h-19h;ETTOUHAMI Elias;UV4
+mercredi 05 novembre 2025;16h-19h;	
+samedi 08 novembre 2025;10h-13h;BIMBERT Eva;UV1
+samedi 08 novembre 2025;10h-13h;RENAULT Morgane;UV3
+samedi 08 novembre 2025;13h-16h;LACOUR Alice;UV4
+samedi 08 novembre 2025;13h-16h;SMOLAREK Cyndi-Rose;UV1
+samedi 08 novembre 2025;16h-19h;AVENAS Thomas;UV4
+samedi 08 novembre 2025;16h-19h;FRANÇOIS Corto;UV3
+mardi 11 novembre 2025;13h-16h;RUIVARD-LEHNER Timéo;UV4
+mardi 11 novembre 2025;13h-16h;BONNASSIEUX Dorian;UV2
+mardi 11 novembre 2025;16h-19h;SMOLAREK Cyndi-Rose;UV1
+mardi 11 novembre 2025;16h-19h;PECHARD Margot;UV2
+mercredi 12 novembre 2025;13h-16h;PECHARD Margot;UV2
+mercredi 12 novembre 2025;13h-16h;CLERC Tyméo;UV3
+mercredi 12 novembre 2025;16h-19h;PONTET Alison;UV3
+mercredi 12 novembre 2025;16h-19h;	
+samedi 15 novembre 2025;10h-13h;SOLER Alice;UV3
+samedi 15 novembre 2025;10h-13h;ROUDIER Rémi;UV1
+samedi 15 novembre 2025;13h-16h;AVENAS Thomas;UV4
+samedi 15 novembre 2025;13h-16h;VERNAY Florentin;UV1
+samedi 15 novembre 2025;16h-19h;CERNIN Nathan;UV3
+samedi 15 novembre 2025;16h-19h;LANDES Zoé;UV2
+mercredi 19 novembre 2025;13h-16h;GIRARDIN Théo Paul;UV2
+mercredi 19 novembre 2025;13h-16h;NASTRAN Loris;UV1
+mercredi 19 novembre 2025;16h-19h;FOURNEL Baptiste;UV3
+mercredi 19 novembre 2025;16h-19h;	
+samedi 22 novembre 2025;10h-13h;RENAULT Morgane;UV3
+samedi 22 novembre 2025;10h-13h;	
+samedi 22 novembre 2025;13h-16h;	
+samedi 22 novembre 2025;13h-16h;	
+samedi 22 novembre 2025;16h-19h;	
+samedi 22 novembre 2025;16h-19h;	
+mercredi 26 novembre 2025;13h-16h;CLERC Tyméo;UV3
+mercredi 26 novembre 2025;13h-16h;OVISE Sasha;UV3
+mercredi 26 novembre 2025;16h-19h;ANDREO Baptiste;UV2
+mercredi 26 novembre 2025;16h-19h;NASTRAN Loris;UV1
+samedi 29 novembre 2025;10h-13h;BONNASSIEUX Dorian;UV2
+samedi 29 novembre 2025;10h-13h;GALBES Mathéo;UV1
+samedi 29 novembre 2025;13h-16h;SOLER Alice;UV3
+samedi 29 novembre 2025;13h-16h;SABALSKY Lily;UV2
+samedi 29 novembre 2025;16h-19h;AVENAS Thomas;UV4
+samedi 29 novembre 2025;16h-19h;PETIT-LAURENT Tom;UV4
+dimanche 30 novembre 2025;10h-13h;BLAY Thimothée;UV4
+dimanche 30 novembre 2025;10h-13h;CERNIN Nathan;UV3
+dimanche 30 novembre 2025;13h-16h;FOURNEL Baptiste;UV3
+dimanche 30 novembre 2025;13h-16h;SABALSKY Lily;UV2
+dimanche 30 novembre 2025;16h-19h;PITOUT Mahé;UV3
+dimanche 30 novembre 2025;16h-19h;GALBES Mathéo;UV1
+mercredi 03 décembre 2025;13h-16h;OVISE Sasha;UV3
+mercredi 03 décembre 2025;13h-16h;RUIVARD-LEHNER Timéo;UV4
+mercredi 03 décembre 2025;16h-19h;BOTH Ambroisine;UV2
+mercredi 03 décembre 2025;16h-19h;ANDREO Baptiste;UV2
+samedi 06 décembre 2025;10h-13h;SOLER Alice;UV3
+samedi 06 décembre 2025;10h-13h;ROUDIER Rémi;UV1
+samedi 06 décembre 2025;13h-16h;LANDES Zoé;UV2
+samedi 06 décembre 2025;13h-16h;RONDET Charlotte;UV2
+samedi 06 décembre 2025;16h-19h;CERNIN Nathan;UV3
+samedi 06 décembre 2025;16h-19h;VERNAY Florentin;UV1
+dimanche 07 décembre 2025;10h-13h;FRANÇOIS Corto;UV3
+dimanche 07 décembre 2025;10h-13h;SABALSKY Lily;UV2
+dimanche 07 décembre 2025;13h-16h;CLERC Tyméo;UV3
+dimanche 07 décembre 2025;13h-16h;RONDET Charlotte;UV2
+dimanche 07 décembre 2025;16h-19h;LANDES Zoé;UV2
+dimanche 07 décembre 2025;16h-19h;ROUDIER Rémi;UV1
+mercredi 10 décembre 2025;13h-16h;HERAUD Eléonore;UV3
+mercredi 10 décembre 2025;13h-16h;ANDREO Baptiste;UV2
+mercredi 10 décembre 2025;16h-19h;SAINT PIERRE Leïna;UV2
+mercredi 10 décembre 2025;16h-19h;LACOUR Alice;UV4	
+samedi 13 décembre 2025;10h-13h;RENAULT Morgane;UV3
+samedi 13 décembre 2025;10h-13h;GALBES Mathéo;UV1
+samedi 13 décembre 2025;13h-16h;SOLER Alice;UV3
+samedi 13 décembre 2025;13h-16h;BLANC Matis;UV1
+samedi 13 décembre 2025;16h-19h;HERAUD Eléonore;UV3
+samedi 13 décembre 2025;16h-19h;NASTRAN Loris;UV1
+dimanche 14 décembre 2025;10h-13h;BLAY Thimothée;UV4
+dimanche 14 décembre 2025;10h-13h;BIMBERT Eva;UV1
+dimanche 14 décembre 2025;13h-16h;RONDET Charlotte;UV2
+dimanche 14 décembre 2025;13h-16h;SABALSKY Lily;UV2
+dimanche 14 décembre 2025;16h-19h;PETIT-LAURENT Tom;UV4
+dimanche 14 décembre 2025;16h-19h;ROUDIER Rémi;UV1
+mercredi 17 décembre 2025;13h-16h;ANDREO Baptiste;UV2
+mercredi 17 décembre 2025;13h-16h;HERAUD Eléonore;UV3
+mercredi 17 décembre 2025;16h-19h;OVISE Sasha;UV3
+mercredi 17 décembre 2025;16h-19h;BOTH Ambroisine;UV2
+samedi 20 décembre 2025;09h30-13h;PITOUT Mahé;UV3
+samedi 20 décembre 2025;09h30-13h;LANDES Zoé;UV2
+samedi 20 décembre 2025;13h-16h;BONNASSIEUX Dorian;UV2
+samedi 20 décembre 2025;13h-16h;BLANC Matis;UV1
+samedi 20 décembre 2025;16h-19h;GOMEZ Téo;UV3
+samedi 20 décembre 2025;16h-19h;VERNAY Florentin;UV1
+dimanche 21 décembre 2025;10h-13h;RUIVARD-LEHNER Timéo;UV4
+dimanche 21 décembre 2025;10h-13h;BLANC Matis;UV1
+dimanche 21 décembre 2025;13h-16h;CLERC Tyméo;UV3
+dimanche 21 décembre 2025;13h-16h;SMOLAREK Cyndi-Rose;UV1
+dimanche 21 décembre 2025;16h-19h;LACOUR Alice;UV4
+dimanche 21 décembre 2025;16h-19h;PONTET Alison;UV3
+lundi 22 décembre 2025;09h30-13h;LACOUR Alice;UV4
+lundi 22 décembre 2025;09h30-13h;BIMBERT Eva;UV1
+lundi 22 décembre 2025;13h-16h;	
+lundi 22 décembre 2025;13h-16h;	
+lundi 22 décembre 2025;16h-19h;AVENAS Thomas;UV4
+lundi 22 décembre 2025;16h-19h;BONNASSIEUX Dorian;UV2
+mardi 23 décembre 2025;09h30-13h;GOMEZ Téo;UV3
+mardi 23 décembre 2025;09h30-13h;FRANÇOIS Corto;UV3
+mardi 23 décembre 2025;13h-16h;GIRARDIN Théo Paul;UV2
+mardi 23 décembre 2025;13h-16h;SAINT PIERRE Leïna;UV2
+mardi 23 décembre 2025;16h-19h;RUIVARD-LEHNER Timéo;UV4
+mardi 23 décembre 2025;16h-19h;GALBES Mathéo;UV1
+mercredi 24 décembre 2025;09h30-12h30;GIRARDIN Théo Paul;UV2
+mercredi 24 décembre 2025;09h30-12h30;BIMBERT Eva;UV1
+mercredi 24 décembre 2025;12h30-15h30;OVISE Sasha;UV3
+mercredi 24 décembre 2025;12h30-15h30;BOTH Ambroisine;UV2
+mercredi 24 décembre 2025;15h30-18h;	
+mercredi 24 décembre 2025;15h30-18h;GOMEZ Téo;UV3`;
+
+        // Fonction pour parser les données CSV
+        function parseCSVData(csvText) {
+            const lines = csvText.trim().split('\n');
+            const assignments = [];
+            
+            lines.forEach(line => {
+                const [dateStr, timeStr, nameStr, uvStr] = line.split(';');
+                
+                const date = dateStr.trim();
+                const time = timeStr.trim();
+                const name = nameStr.trim();
+                const uv = uvStr;
+                
+                // Ne traiter que les créneaux avec un nom assigné
+                if (name && name !== '') {
+                    assignments.push({
+                        date: date,
+                        time: time,
+                        name: name,
+                        uv: uv
+                    });
+                }
+            });
+            
+            return assignments;
+        }
+
+        // Fonction pour convertir une date française en objet Date pour le tri
+        function parseFrenchDate(dateStr) {
+            const match = dateStr.match(/(\d{1,2})\s+(octobre|novembre|décembre)\s+2025/i);
+            if (match) {
+                const day = parseInt(match[1]);
+                const monthMap = {
+                    'octobre': 10,
+                    'novembre': 11,
+                    'décembre': 12
+                };
+                const month = monthMap[match[2].toLowerCase()];
+                return new Date(2025, month - 1, day);
+            }
+            return new Date(0);
+        }
+
+        // Fonction pour obtenir la classe CSS selon le nombre d'affectations
+        function getCountClass(count) {
+            if (count <= 2) return 'count-red';
+            if (count === 3) return 'count-orange';
+            if (count === 4) return 'count-green';
+            return 'count-blue';
+        }
+
+        // Fonction pour trouver les partenaires pour une personne
+        function findPartners(assignments, allAssignments) {
+            const partnersBySlot = {};
+            
+            assignments.forEach(assignment => {
+                const slotKey = `${assignment.date}|${assignment.time}`;
+                if (!partnersBySlot[slotKey]) {
+                    partnersBySlot[slotKey] = [];
+                }
+                partnersBySlot[slotKey].push(assignment);
+            });
+            
+            // Trouver les autres personnes sur les mêmes créneaux
+            Object.keys(partnersBySlot).forEach(slotKey => {
+                const [date, time] = slotKey.split('|');
+                const otherPeopleOnSameSlot = allAssignments.filter(a => 
+                    a.date === date && a.time === time && 
+                    !assignments.some(pa => pa.name === a.name && pa.date === a.date && pa.time === a.time)
+                );
+                
+                if (otherPeopleOnSameSlot.length > 0) {
+                    partnersBySlot[slotKey].forEach(assignment => {
+                        assignment.partners = otherPeopleOnSameSlot.map(p => p.name);
+                    });
+                } else {
+                    partnersBySlot[slotKey].forEach(assignment => {
+                        assignment.partners = [];
+                    });
+                }
+            });
+            
+            return assignments;
+        }
+
+        // Fonction pour générer le tableau
+        function generateTable() {
+            const assignments = parseCSVData(csvData);
+            const assignmentsByPerson = {};
+            
+            // Grouper les affectations par personne
+            assignments.forEach(assignment => {
+                if (!assignmentsByPerson[assignment.name]) {
+                    assignmentsByPerson[assignment.name] = [];
+                }
+                assignmentsByPerson[assignment.name].push(assignment);
+            });
+            
+            // Ajouter les informations sur les partenaires
+            Object.keys(assignmentsByPerson).forEach(name => {
+                assignmentsByPerson[name] = findPartners(assignmentsByPerson[name], assignments);
+            });
+            
+            // Trier les affectations par date pour chaque personne
+            Object.keys(assignmentsByPerson).forEach(name => {
+                assignmentsByPerson[name].sort((a, b) => {
+                    const dateA = parseFrenchDate(a.date);
+                    const dateB = parseFrenchDate(b.date);
+                    if (dateA.getTime() !== dateB.getTime()) {
+                        return dateA - dateB;
+                    }
+                    // Si même date, trier par heure
+                    return a.time.localeCompare(b.time);
+                });
+            });
+            
+            // Trier les noms par ordre alphabétique
+            const sortedNames = Object.keys(assignmentsByPerson).sort((a, b) => a.localeCompare(b));
+            
+            // Générer les statistiques
+            generateStats(assignmentsByPerson, sortedNames);
+            
+            // Générer le tableau
+            const tbody = document.getElementById('assignments-tbody');
+            tbody.innerHTML = '';
+            
+            sortedNames.forEach(name => {
+                const personAssignments = assignmentsByPerson[name];
+                const count = personAssignments.length;
+                
+                const row = document.createElement('tr');
+                
+                // Colonne nom
+                const nameCell = document.createElement('td');
+                nameCell.className = 'name-cell';
+                
+                // Trouver l'UV de cette personne (prendre la première UV trouvée)
+                const firstAssignment = personAssignments[0];
+                const uv = firstAssignment ? firstAssignment.uv : '';
+                nameCell.textContent = uv ? `${name} (${uv})` : name;
+                row.appendChild(nameCell);
+                
+                // Colonne affectations
+                const assignmentsCell = document.createElement('td');
+                const assignmentsList = document.createElement('ul');
+                assignmentsList.className = 'assignments-list';
+                
+                personAssignments.forEach(assignment => {
+                    const item = document.createElement('li');
+                    item.className = 'assignment-item';
+                    
+                    const dateSpan = document.createElement('span');
+                    dateSpan.className = 'assignment-date';
+                    dateSpan.textContent = assignment.date;
+                    
+                    const timeSpan = document.createElement('span');
+                    timeSpan.className = 'assignment-time';
+                    timeSpan.textContent = assignment.time;
+                    
+                    item.appendChild(dateSpan);
+                    item.appendChild(timeSpan);
+                    
+                    // Ajouter l'information des partenaires (pas pour octobre)
+                    const isOctober = assignment.date.toLowerCase().includes('octobre');
+                    
+                    const partnerSpan = document.createElement('span');
+                    partnerSpan.className = 'assignment-partner';
+                    if (!isOctober) {
+                        if (assignment.partners && assignment.partners.length > 0) {
+                            // Trouver les UV des partenaires
+                            const partnersWithUV = assignment.partners.map(partnerName => {
+                                // Chercher l'UV de ce partenaire dans les affectations du même créneau
+                                const partnerAssignment = assignments.find(a => 
+                                    a.name === partnerName && 
+                                    a.date === assignment.date && 
+                                    a.time === assignment.time
+                                );
+                                const partnerUV = partnerAssignment ? partnerAssignment.uv : '';
+                                return partnerUV ? `${partnerName} (${partnerUV})` : partnerName;
+                            });
+                            
+                            partnerSpan.textContent = `Partenaire : ${partnersWithUV.join(', ')}`;
+                        } else {
+                            partnerSpan.className = 'assignment-partner no-partner';
+                            partnerSpan.textContent = 'Partenaire : non assigné';
+                        }
+                    } else {
+                        partnerSpan.textContent = 'Créneau solo (octobre)';
+                    }
+                    item.appendChild(partnerSpan);                    
+                    assignmentsList.appendChild(item);
+                });
+                
+                assignmentsCell.appendChild(assignmentsList);
+                row.appendChild(assignmentsCell);
+                
+                // Colonne nombre d'affectations
+                const countCell = document.createElement('td');
+                countCell.className = `count-cell ${getCountClass(count)}`;
+                countCell.textContent = count;
+                row.appendChild(countCell);
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Fonction pour générer les statistiques
+        function generateStats(assignmentsByPerson, sortedNames) {
+            const stats = {
+                totalPeople: sortedNames.length,
+                totalAssignments: 0,
+                redCount: 0,
+                orangeCount: 0,
+                greenCount: 0,
+                blueCount: 0
+            };
+            
+            Object.values(assignmentsByPerson).forEach(assignments => {
+                stats.totalAssignments += assignments.length;
+                const count = assignments.length;
+                
+                if (count <= 2) stats.redCount++;
+                else if (count === 3) stats.orangeCount++;
+                else if (count === 4) stats.greenCount++;
+                else stats.blueCount++;
+            });
+            
+            const statsContainer = document.getElementById('stats');
+            statsContainer.innerHTML = `
+                <h3>Statistiques des affectations</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">${stats.totalPeople}</div>
+                        <div class="stat-label">JSP</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${stats.totalAssignments}</div>
+                        <div class="stat-label">Affectations totales</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${stats.redCount}</div>
+                        <div class="stat-label">0-2 affectations</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${stats.orangeCount}</div>
+                        <div class="stat-label">3 affectations</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${stats.greenCount}</div>
+                        <div class="stat-label">4 affectations</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${stats.blueCount}</div>
+                        <div class="stat-label">5+ affectations</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Générer le tableau au chargement de la page
+        document.addEventListener('DOMContentLoaded', generateTable);
+    </script>
+</body>
+</html>

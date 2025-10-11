@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning - Octobre, Novembre, Décembre 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .calendar-container {
+            padding: 30px;
+        }
+
+        .month {
+            margin-bottom: 40px;
+        }
+
+        .month-title {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #ddd;
+            border: 1px solid #ddd;
+        }
+
+        .day-header {
+            background: #34495e;
+            color: white;
+            padding: 15px 5px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .day-cell {
+            background: white;
+            min-height: 120px;
+            padding: 8px;
+            border: 1px solid #eee;
+            position: relative;
+        }
+
+        .day-number {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .time-slot {
+            background: #e8f5e8;
+            border: 1px solid #c3e6c3;
+            border-radius: 4px;
+            padding: 4px 6px;
+            margin: 2px 0;
+            font-size: 0.75em;
+            line-height: 1.2;
+        }
+
+        .time-slot.empty {
+            background: #ffeaea;
+            border-color: #ffcccc;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .time-slot.assigned {
+            background: #e3f2fd;
+            border-color: #bbdefb;
+            color: #1976d2;
+        }
+
+        .time-text {
+            font-weight: bold;
+            display: block;
+        }
+
+        .name-text {
+            font-size: 0.85em;
+            margin-top: 2px;
+        }
+
+        .uv-text {
+            color: #666;
+            font-style: italic;
+        }
+
+        .empty-day {
+            background: #f8f9fa;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+        }
+
+        .legend {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border: 1px solid #dee2e6;
+        }
+
+        .legend h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .legend-color.assigned {
+            background: #e3f2fd;
+            border-color: #bbdefb;
+        }
+
+        .legend-color.empty {
+            background: #ffeaea;
+            border-color: #ffcccc;
+        }
+
+         @media (max-width: 768px) {
+             .calendar-grid {
+                 font-size: 0.8em;
+             }
+             
+             .day-cell {
+                 min-height: 80px;
+                 padding: 4px;
+             }
+             
+             .time-slot {
+                 font-size: 0.7em;
+             }
+         }
+
+         /* Styles pour l'impression */
+         @media print {
+             body {
+                 background: white;
+                 padding: 0;
+                 margin: 0;
+             }
+
+             .container {
+                 box-shadow: none;
+                 border-radius: 0;
+                 max-width: none;
+                 margin: 0;
+             }
+
+             .header {
+                 display: none;
+             }
+
+             .legend {
+                 display: none;
+             }
+
+             .calendar-container {
+                 padding: 0;
+             }
+
+             .month {
+                 page-break-after: always;
+                 margin-bottom: 0;
+                 break-after: page;
+             }
+
+             .month:last-child {
+                 page-break-after: avoid;
+                 break-after: avoid;
+             }
+
+             .month-title {
+                 background: #2c3e50 !important;
+                 color: white !important;
+                 -webkit-print-color-adjust: exact;
+                 print-color-adjust: exact;
+                 border-radius: 0;
+                 margin-bottom: 10px;
+             }
+
+             .calendar-grid {
+                 border: 2px solid #333;
+             }
+
+             .day-header {
+                 background: #34495e !important;
+                 color: white !important;
+                 -webkit-print-color-adjust: exact;
+                 print-color-adjust: exact;
+                 font-weight: bold;
+             }
+
+             .day-cell {
+                 border: 1px solid #ccc;
+                 min-height: 100px;
+                 background: white !important;
+                 -webkit-print-color-adjust: exact;
+                 print-color-adjust: exact;
+             }
+
+             .time-slot {
+                 page-break-inside: avoid;
+                 break-inside: avoid;
+             }
+
+             .time-slot.assigned {
+                 background: #e3f2fd !important;
+                 border-color: #bbdefb !important;
+                 color: #1976d2 !important;
+                 -webkit-print-color-adjust: exact;
+                 print-color-adjust: exact;
+             }
+
+             .time-slot.empty {
+                 background: #ffeaea !important;
+                 border-color: #ffcccc !important;
+                 color: #d32f2f !important;
+                 -webkit-print-color-adjust: exact;
+                 print-color-adjust: exact;
+             }
+
+             .day-number {
+                 color: #2c3e50 !important;
+                 font-weight: bold;
+             }
+
+             .uv-text {
+                 color: #666 !important;
+             }
+
+             /* Optimisation de la taille pour l'impression */
+             .time-slot {
+                 font-size: 0.7em;
+                 padding: 3px 5px;
+                 margin: 1px 0;
+             }
+
+             .name-text {
+                 font-size: 0.8em;
+             }
+
+             .time-text {
+                 font-size: 0.75em;
+             }
+         }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Planning des Créneaux</h1>
+            <p>Opération King Jouet 2025 🦁👑</p>
+        </div>
+        
+        <div class="calendar-container" id="calendar-container">
+            <!-- Le calendrier sera généré ici par JavaScript -->
+        </div>
+
+        <div class="legend">
+            <h3>Légende</h3>
+            <div class="legend-item">
+                <div class="legend-color assigned"></div>
+                <span>Creneau assigné</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color empty"></div>
+                <span>Creneau sans assignation</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Données CSV intégrées
+        const csvData = `lundi 27 octobre 2025;10h-13h;PETIT-LAURENT Tom;UV4
+lundi 27 octobre 2025;13h-16h;GOMEZ Téo;UV3
+lundi 27 octobre 2025;16h-19h;FOURNEL Baptiste;UV3
+mardi 28 octobre 2025;10h-13h;ETTOUHAMI Elias;UV4
+mardi 28 octobre 2025;13h-16h;SAINT PIERRE Leïna;UV2
+mardi 28 octobre 2025;16h-19h;PONTET Alison;UV3
+mercredi 29 octobre 2025;10h-13h;PECHARD Margot;UV2
+mercredi 29 octobre 2025;13h-16h;PITOUT Mahé;UV3
+mercredi 29 octobre 2025;16h-19h;PONTET Alison;UV3
+jeudi 30 octobre 2025;10h-13h;PETIT-LAURENT Tom;UV4
+jeudi 30 octobre 2025;13h-16h;FOURNEL Baptiste;UV3
+jeudi 30 octobre 2025;16h-19h;SAINT PIERRE Leïna;UV2
+vendredi 31 octobre 2025;10h-13h;CERNIN Nathan;UV3
+vendredi 31 octobre 2025;13h-16h;GIRARDIN Théo Paul;UV2
+vendredi 31 octobre 2025;16h-19h;ETTOUHAMI Elias;UV4
+samedi 01 novembre 2025;10h-13h;PECHARD Margot;UV2
+samedi 01 novembre 2025;10h-13h;BLAY Thimothée;UV4
+samedi 01 novembre 2025;13h-16h;BLANC Matis;UV1
+samedi 01 novembre 2025;13h-16h;PITOUT Mahé;UV3
+samedi 01 novembre 2025;16h-19h;BOTH Ambroisine;UV2
+samedi 01 novembre 2025;16h-19h;FRANÇOIS Corto;UV3
+mercredi 05 novembre 2025;13h-16h;HERAUD Eléonore;UV3
+mercredi 05 novembre 2025;13h-16h;NASTRAN Loris;UV1
+mercredi 05 novembre 2025;16h-19h;ETTOUHAMI Elias;UV4
+mercredi 05 novembre 2025;16h-19h;	
+samedi 08 novembre 2025;10h-13h;BIMBERT Eva;UV1
+samedi 08 novembre 2025;10h-13h;RENAULT Morgane;UV3
+samedi 08 novembre 2025;13h-16h;LACOUR Alice;UV4
+samedi 08 novembre 2025;13h-16h;SMOLAREK Cyndi-Rose;UV1
+samedi 08 novembre 2025;16h-19h;AVENAS Thomas;UV4
+samedi 08 novembre 2025;16h-19h;FRANÇOIS Corto;UV3
+mardi 11 novembre 2025;13h-16h;RUIVARD-LEHNER Timéo;UV4
+mardi 11 novembre 2025;13h-16h;BONNASSIEUX Dorian;UV2
+mardi 11 novembre 2025;16h-19h;SMOLAREK Cyndi-Rose;UV1
+mardi 11 novembre 2025;16h-19h;PECHARD Margot;UV2
+mercredi 12 novembre 2025;13h-16h;PECHARD Margot;UV2
+mercredi 12 novembre 2025;13h-16h;CLERC Tyméo;UV3
+mercredi 12 novembre 2025;16h-19h;PONTET Alison;UV3
+mercredi 12 novembre 2025;16h-19h;	
+samedi 15 novembre 2025;10h-13h;SOLER Alice;UV3
+samedi 15 novembre 2025;10h-13h;ROUDIER Rémi;UV1
+samedi 15 novembre 2025;13h-16h;AVENAS Thomas;UV4
+samedi 15 novembre 2025;13h-16h;VERNAY Florentin;UV1
+samedi 15 novembre 2025;16h-19h;CERNIN Nathan;UV3
+samedi 15 novembre 2025;16h-19h;LANDES Zoé;UV2
+mercredi 19 novembre 2025;13h-16h;GIRARDIN Théo Paul;UV2
+mercredi 19 novembre 2025;13h-16h;NASTRAN Loris;UV1
+mercredi 19 novembre 2025;16h-19h;FOURNEL Baptiste;UV3
+mercredi 19 novembre 2025;16h-19h;	
+samedi 22 novembre 2025;10h-13h;RENAULT Morgane;UV3
+samedi 22 novembre 2025;10h-13h;	
+samedi 22 novembre 2025;13h-16h;	
+samedi 22 novembre 2025;13h-16h;	
+samedi 22 novembre 2025;16h-19h;	
+samedi 22 novembre 2025;16h-19h;	
+mercredi 26 novembre 2025;13h-16h;CLERC Tyméo;UV3
+mercredi 26 novembre 2025;13h-16h;OVISE Sasha;UV3
+mercredi 26 novembre 2025;16h-19h;ANDREO Baptiste;UV2
+mercredi 26 novembre 2025;16h-19h;NASTRAN Loris;UV1
+samedi 29 novembre 2025;10h-13h;BONNASSIEUX Dorian;UV2
+samedi 29 novembre 2025;10h-13h;GALBES Mathéo;UV1
+samedi 29 novembre 2025;13h-16h;SOLER Alice;UV3
+samedi 29 novembre 2025;13h-16h;SABALSKY Lily;UV2
+samedi 29 novembre 2025;16h-19h;AVENAS Thomas;UV4
+samedi 29 novembre 2025;16h-19h;PETIT-LAURENT Tom;UV4
+dimanche 30 novembre 2025;10h-13h;BLAY Thimothée;UV4
+dimanche 30 novembre 2025;10h-13h;CERNIN Nathan;UV3
+dimanche 30 novembre 2025;13h-16h;FOURNEL Baptiste;UV3
+dimanche 30 novembre 2025;13h-16h;SABALSKY Lily;UV2
+dimanche 30 novembre 2025;16h-19h;PITOUT Mahé;UV3
+dimanche 30 novembre 2025;16h-19h;GALBES Mathéo;UV1
+mercredi 03 décembre 2025;13h-16h;OVISE Sasha;UV3
+mercredi 03 décembre 2025;13h-16h;RUIVARD-LEHNER Timéo;UV4
+mercredi 03 décembre 2025;16h-19h;BOTH Ambroisine;UV2
+mercredi 03 décembre 2025;16h-19h;ANDREO Baptiste;UV2
+samedi 06 décembre 2025;10h-13h;SOLER Alice;UV3
+samedi 06 décembre 2025;10h-13h;ROUDIER Rémi;UV1
+samedi 06 décembre 2025;13h-16h;LANDES Zoé;UV2
+samedi 06 décembre 2025;13h-16h;RONDET Charlotte;UV2
+samedi 06 décembre 2025;16h-19h;CERNIN Nathan;UV3
+samedi 06 décembre 2025;16h-19h;VERNAY Florentin;UV1
+dimanche 07 décembre 2025;10h-13h;FRANÇOIS Corto;UV3
+dimanche 07 décembre 2025;10h-13h;SABALSKY Lily;UV2
+dimanche 07 décembre 2025;13h-16h;CLERC Tyméo;UV3
+dimanche 07 décembre 2025;13h-16h;RONDET Charlotte;UV2
+dimanche 07 décembre 2025;16h-19h;LANDES Zoé;UV2
+dimanche 07 décembre 2025;16h-19h;ROUDIER Rémi;UV1
+mercredi 10 décembre 2025;13h-16h;HERAUD Eléonore;UV3
+mercredi 10 décembre 2025;13h-16h;ANDREO Baptiste;UV2
+mercredi 10 décembre 2025;16h-19h;SAINT PIERRE Leïna;UV2
+mercredi 10 décembre 2025;16h-19h;LACOUR Alice;UV4	
+samedi 13 décembre 2025;10h-13h;RENAULT Morgane;UV3
+samedi 13 décembre 2025;10h-13h;GALBES Mathéo;UV1
+samedi 13 décembre 2025;13h-16h;SOLER Alice;UV3
+samedi 13 décembre 2025;13h-16h;BLANC Matis;UV1
+samedi 13 décembre 2025;16h-19h;HERAUD Eléonore;UV3
+samedi 13 décembre 2025;16h-19h;NASTRAN Loris;UV1
+dimanche 14 décembre 2025;10h-13h;BLAY Thimothée;UV4
+dimanche 14 décembre 2025;10h-13h;BIMBERT Eva;UV1
+dimanche 14 décembre 2025;13h-16h;RONDET Charlotte;UV2
+dimanche 14 décembre 2025;13h-16h;SABALSKY Lily;UV2
+dimanche 14 décembre 2025;16h-19h;PETIT-LAURENT Tom;UV4
+dimanche 14 décembre 2025;16h-19h;ROUDIER Rémi;UV1
+mercredi 17 décembre 2025;13h-16h;ANDREO Baptiste;UV2
+mercredi 17 décembre 2025;13h-16h;HERAUD Eléonore;UV3
+mercredi 17 décembre 2025;16h-19h;OVISE Sasha;UV3
+mercredi 17 décembre 2025;16h-19h;BOTH Ambroisine;UV2
+samedi 20 décembre 2025;09h30-13h;PITOUT Mahé;UV3
+samedi 20 décembre 2025;09h30-13h;LANDES Zoé;UV2
+samedi 20 décembre 2025;13h-16h;BONNASSIEUX Dorian;UV2
+samedi 20 décembre 2025;13h-16h;BLANC Matis;UV1
+samedi 20 décembre 2025;16h-19h;GOMEZ Téo;UV3
+samedi 20 décembre 2025;16h-19h;VERNAY Florentin;UV1
+dimanche 21 décembre 2025;10h-13h;RUIVARD-LEHNER Timéo;UV4
+dimanche 21 décembre 2025;10h-13h;BLANC Matis;UV1
+dimanche 21 décembre 2025;13h-16h;CLERC Tyméo;UV3
+dimanche 21 décembre 2025;13h-16h;SMOLAREK Cyndi-Rose;UV1
+dimanche 21 décembre 2025;16h-19h;LACOUR Alice;UV4
+dimanche 21 décembre 2025;16h-19h;PONTET Alison;UV3
+lundi 22 décembre 2025;09h30-13h;LACOUR Alice;UV4
+lundi 22 décembre 2025;09h30-13h;BIMBERT Eva;UV1
+lundi 22 décembre 2025;13h-16h;	
+lundi 22 décembre 2025;13h-16h;	
+lundi 22 décembre 2025;16h-19h;AVENAS Thomas;UV4
+lundi 22 décembre 2025;16h-19h;BONNASSIEUX Dorian;UV2
+mardi 23 décembre 2025;09h30-13h;GOMEZ Téo;UV3
+mardi 23 décembre 2025;09h30-13h;FRANÇOIS Corto;UV3
+mardi 23 décembre 2025;13h-16h;GIRARDIN Théo Paul;UV2
+mardi 23 décembre 2025;13h-16h;SAINT PIERRE Leïna;UV2
+mardi 23 décembre 2025;16h-19h;RUIVARD-LEHNER Timéo;UV4
+mardi 23 décembre 2025;16h-19h;GALBES Mathéo;UV1
+mercredi 24 décembre 2025;09h30-12h30;GIRARDIN Théo Paul;UV2
+mercredi 24 décembre 2025;09h30-12h30;BIMBERT Eva;UV1
+mercredi 24 décembre 2025;12h30-15h30;OVISE Sasha;UV3
+mercredi 24 décembre 2025;12h30-15h30;BOTH Ambroisine;UV2
+mercredi 24 décembre 2025;15h30-18h;	
+mercredi 24 décembre 2025;15h30-18h;GOMEZ Téo;UV3`;
+
+        // Fonction pour parser les données CSV
+        function parseCSVData(csvText) {
+            const lines = csvText.trim().split('\n');
+            const data = {};
+            
+            lines.forEach(line => {
+                const [dateStr, timeStr, nameStr, uvStr] = line.split(';');
+                
+                // Extraire les informations
+                const date = dateStr.trim();
+                const time = timeStr.trim();
+                const name = nameStr.trim();
+                const uv = uvStr;
+                
+                // Initialiser la date si elle n'existe pas
+                if (!data[date]) {
+                    data[date] = [];
+                }
+                
+                // Ajouter le créneau
+                data[date].push({
+                    time: time,
+                    name: name,
+                    uv: uv,
+                    isEmpty: !name || name === ''
+                });
+            });
+            
+            return data;
+        }
+
+        // Fonction pour extraire le jour du mois à partir de la date française
+        function extractDayFromFrenchDate(dateStr) {
+            const match = dateStr.match(/(\d{1,2})\s+(octobre|novembre|décembre)\s+2025/i);
+            if (match) {
+                return parseInt(match[1]);
+            }
+            return null;
+        }
+
+        // Fonction pour obtenir le mois à partir de la date française
+        function extractMonthFromFrenchDate(dateStr) {
+            const match = dateStr.match(/(octobre|novembre|décembre)/i);
+            if (match) {
+                return match[1].toLowerCase();
+            }
+            return null;
+        }
+
+        // Fonction pour obtenir le jour de la semaine (0=dimanche, 1=lundi, etc.)
+        function getDayOfWeek(dateStr) {
+            const dayMap = {
+                'dimanche': 0, 'lundi': 1, 'mardi': 2, 'mercredi': 3,
+                'jeudi': 4, 'vendredi': 5, 'samedi': 6
+            };
+            const match = dateStr.match(/(dimanche|lundi|mardi|mercredi|jeudi|vendredi|samedi)/i);
+            return match ? dayMap[match[1]] : null;
+        }
+
+        // Fonction pour générer le calendrier
+        function generateCalendar() {
+            const data = parseCSVData(csvData);
+            const container = document.getElementById('calendar-container');
+            
+            const months = ['octobre', 'novembre', 'décembre'];
+            const monthNames = {
+                'octobre': 'Octobre 2025',
+                'novembre': 'Novembre 2025',
+                'décembre': 'Décembre 2025'
+            };
+            
+            const daysInMonth = {
+                'octobre': 31,
+                'novembre': 30,
+                'décembre': 31
+            };
+            
+            const firstDayOfMonth = {
+                'octobre': 3, // 1er octobre 2025 est un mercredi
+                'novembre': 6, // 1er novembre 2025 est un samedi
+                'décembre': 1  // 1er décembre 2025 est un lundi
+            };
+            
+            const dayHeaders = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+            
+            months.forEach(month => {
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'month';
+                
+                // Titre du mois
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'month-title';
+                titleDiv.textContent = monthNames[month];
+                monthDiv.appendChild(titleDiv);
+                
+                // Grille du calendrier
+                const gridDiv = document.createElement('div');
+                gridDiv.className = 'calendar-grid';
+                
+                // En-têtes des jours
+                dayHeaders.forEach(day => {
+                    const headerDiv = document.createElement('div');
+                    headerDiv.className = 'day-header';
+                    headerDiv.textContent = day;
+                    gridDiv.appendChild(headerDiv);
+                });
+                
+                // Cellules vides pour le début du mois
+                for (let i = 0; i < firstDayOfMonth[month]; i++) {
+                    const emptyDiv = document.createElement('div');
+                    emptyDiv.className = 'day-cell empty-day';
+                    emptyDiv.textContent = '';
+                    gridDiv.appendChild(emptyDiv);
+                }
+                
+                // Cellules des jours du mois
+                for (let day = 1; day <= daysInMonth[month]; day++) {
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'day-cell';
+                    
+                    const dayNumberDiv = document.createElement('div');
+                    dayNumberDiv.className = 'day-number';
+                    dayNumberDiv.textContent = day;
+                    dayDiv.appendChild(dayNumberDiv);
+                    
+                     // Trouver les créneaux pour ce jour
+                     const slotsForDay = [];
+                     Object.keys(data).forEach(dateKey => {
+                         if (extractMonthFromFrenchDate(dateKey) === month && 
+                             extractDayFromFrenchDate(dateKey) === day) {
+                             slotsForDay.push(...data[dateKey]);
+                         }
+                     });
+                     
+                     // Grouper les créneaux par horaire
+                     const groupedSlots = {};
+                     slotsForDay.forEach(slot => {
+                         if (!groupedSlots[slot.time]) {
+                             groupedSlots[slot.time] = [];
+                         }
+                         groupedSlots[slot.time].push(slot);
+                     });
+                     
+                     // Ajouter les créneaux groupés
+                     Object.keys(groupedSlots).forEach(time => {
+                         const slots = groupedSlots[time];
+                         const assignedSlots = slots.filter(slot => !slot.isEmpty);
+                         const emptySlots = slots.filter(slot => slot.isEmpty);
+                         
+                         // Si il y a des créneaux assignés ET des créneaux vides, les séparer
+                         if (assignedSlots.length > 0 && emptySlots.length > 0) {
+                             // Afficher d'abord le créneau assigné (fusionné)
+                             if (assignedSlots.length > 0) {
+                                 const slotDiv = document.createElement('div');
+                                 slotDiv.className = 'time-slot assigned';
+                                 
+                                 const timeDiv = document.createElement('span');
+                                 timeDiv.className = 'time-text';
+                                 timeDiv.textContent = time;
+                                 slotDiv.appendChild(timeDiv);
+                                 
+                                 assignedSlots.forEach(slot => {
+                                     const nameDiv = document.createElement('div');
+                                     nameDiv.className = 'name-text';
+                                     nameDiv.innerHTML = `${slot.name} <span class="uv-text">(${slot.uv})</span>`;
+                                     slotDiv.appendChild(nameDiv);
+                                 });
+                                 
+                                 dayDiv.appendChild(slotDiv);
+                             }
+                             
+                             // Puis afficher le(s) créneau(s) vide(s)
+                             emptySlots.forEach(() => {
+                                 const slotDiv = document.createElement('div');
+                                 slotDiv.className = 'time-slot empty';
+                                 
+                                 const timeDiv = document.createElement('span');
+                                 timeDiv.className = 'time-text';
+                                 timeDiv.textContent = time;
+                                 slotDiv.appendChild(timeDiv);
+                                 
+                                 const emptyDiv = document.createElement('div');
+                                 emptyDiv.className = 'name-text';
+                                 emptyDiv.textContent = 'Non assigné';
+                                 slotDiv.appendChild(emptyDiv);
+                                 
+                                 dayDiv.appendChild(slotDiv);
+                             });
+                         } else {
+                             // Cas normal : soit que des assignés, soit que des vides
+                             const hasAssigned = assignedSlots.length > 0;
+                             
+                             const slotDiv = document.createElement('div');
+                             slotDiv.className = `time-slot ${hasAssigned ? 'assigned' : 'empty'}`;
+                             
+                             const timeDiv = document.createElement('span');
+                             timeDiv.className = 'time-text';
+                             timeDiv.textContent = time;
+                             slotDiv.appendChild(timeDiv);
+                             
+                             if (hasAssigned) {
+                                 // Ajouter tous les noms assignés pour cet horaire
+                                 assignedSlots.forEach(slot => {
+                                     const nameDiv = document.createElement('div');
+                                     nameDiv.className = 'name-text';
+                                     nameDiv.innerHTML = `${slot.name} <span class="uv-text">(${slot.uv})</span>`;
+                                     slotDiv.appendChild(nameDiv);
+                                 });
+                             } else {
+                                 // Afficher "Non assigné" pour chaque créneau vide
+                                 emptySlots.forEach(() => {
+                                     const emptyDiv = document.createElement('div');
+                                     emptyDiv.className = 'name-text';
+                                     emptyDiv.textContent = 'Non assigné';
+                                     slotDiv.appendChild(emptyDiv);
+                                 });
+                             }
+                             
+                             dayDiv.appendChild(slotDiv);
+                         }
+                     });
+                    
+                    gridDiv.appendChild(dayDiv);
+                }
+                
+                monthDiv.appendChild(gridDiv);
+                container.appendChild(monthDiv);
+            });
+        }
+
+        // Générer le calendrier au chargement de la page
+        document.addEventListener('DOMContentLoaded', generateCalendar);
+    </script>
+</body>
+</html>

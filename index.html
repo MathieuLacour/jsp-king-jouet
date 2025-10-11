@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réservation de Créneaux</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Réservation de Créneaux</h1>
+        
+        <!-- Sélection du nom -->
+        <div class="name-selection">
+            <label for="nameSelect">Choisissez votre nom :</label>
+            <select id="nameSelect">
+                <option value="">-- Sélectionnez un nom --</option>
+                <option value="Alice">Alice</option>
+                <option value="Bob">Bob</option>
+                <option value="Charlie">Charlie</option>
+                <option value="Diana">Diana</option>
+                <option value="Eve">Eve</option>
+                <option value="Frank">Frank</option>
+                <option value="Grace">Grace</option>
+                <option value="Henry">Henry</option>
+            </select>
+        </div>
+
+        <!-- Informations de réservation -->
+        <div class="reservation-info">
+            <p>Créneaux réservés : <span id="reservationCount">0</span>/10</p>
+            <p>Nom sélectionné : <span id="selectedName">Aucun</span></p>
+        </div>
+
+        <!-- Calendrier -->
+        <div class="calendar-container">
+            <div id="calendar"></div>
+        </div>
+    </div>
+
+    <!-- Modal pour choisir les créneaux -->
+    <div id="timeSlotModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Choisir un créneau</h2>
+            <p id="selectedDate"></p>
+            <div class="time-slots">
+                <button class="time-slot" data-time="9-11">9h - 11h</button>
+                <button class="time-slot" data-time="11-13">11h - 13h</button>
+                <button class="time-slot" data-time="13-15">13h - 15h</button>
+                <button class="time-slot" data-time="15-17">15h - 17h</button>
+                <button class="time-slot" data-time="17-19">17h - 19h</button>
+            </div>
+            <div class="modal-actions">
+                <button id="confirmReservation" class="btn-primary">Confirmer</button>
+                <button id="cancelReservation" class="btn-secondary">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
