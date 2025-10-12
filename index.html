@@ -3,62 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Réservation de Créneaux</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Opération King Jouet 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: #e9ecef;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        .tab:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        .tab:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        .tab.active {
+            background: white;
+            color: #2c3e50;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab:hover:not(.active) {
+            background: #dee2e6;
+            color: #495057;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: 80vh;
+            border: none;
+            border-radius: 0 0 10px 10px;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                border-radius: 0;
+                border-bottom: 1px solid #dee2e6;
+            }
+            
+            .tab:first-child {
+                border-top-left-radius: 0;
+            }
+            
+            .tab:last-child {
+                border-top-right-radius: 0;
+                border-bottom: none;
+            }
+            
+            .iframe-container {
+                height: 70vh;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Réservation de Créneaux</h1>
+        <div class="header">
+            <h1>Opération King Jouet 2025 🦁👑</h1>
+            <p>Planning et Affectations</p>
+        </div>
         
-        <!-- Sélection du nom -->
-        <div class="name-selection">
-            <label for="nameSelect">Choisissez votre nom :</label>
-            <select id="nameSelect">
-                <option value="">-- Sélectionnez un nom --</option>
-                <option value="Alice">Alice</option>
-                <option value="Bob">Bob</option>
-                <option value="Charlie">Charlie</option>
-                <option value="Diana">Diana</option>
-                <option value="Eve">Eve</option>
-                <option value="Frank">Frank</option>
-                <option value="Grace">Grace</option>
-                <option value="Henry">Henry</option>
-            </select>
+        <div class="tabs">
+            <button class="tab active" onclick="openTab(event, 'affectations')">Tableau des Affectations</button>
+            <button class="tab" onclick="openTab(event, 'planning')">Planning des Créneaux</button>
         </div>
 
-        <!-- Informations de réservation -->
-        <div class="reservation-info">
-            <p>Créneaux réservés : <span id="reservationCount">0</span>/10</p>
-            <p>Nom sélectionné : <span id="selectedName">Aucun</span></p>
+        <div id="affectations" class="tab-content active">
+            <iframe src="affectation.html" class="iframe-container" id="affectations-iframe"></iframe>
         </div>
 
-        <!-- Calendrier -->
-        <div class="calendar-container">
-            <div id="calendar"></div>
+        <div id="planning" class="tab-content">
+            <iframe src="planning.html" class="iframe-container" id="planning-iframe"></iframe>
         </div>
     </div>
 
-    <!-- Modal pour choisir les créneaux -->
-    <div id="timeSlotModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Choisir un créneau</h2>
-            <p id="selectedDate"></p>
-            <div class="time-slots">
-                <button class="time-slot" data-time="9-11">9h - 11h</button>
-                <button class="time-slot" data-time="11-13">11h - 13h</button>
-                <button class="time-slot" data-time="13-15">13h - 15h</button>
-                <button class="time-slot" data-time="15-17">15h - 17h</button>
-                <button class="time-slot" data-time="17-19">17h - 19h</button>
-            </div>
-            <div class="modal-actions">
-                <button id="confirmReservation" class="btn-primary">Confirmer</button>
-                <button id="cancelReservation" class="btn-secondary">Annuler</button>
-            </div>
-        </div>
-    </div>
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tabs;
+            
+            // Masquer tous les contenus d'onglets
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            // Retirer la classe active de tous les onglets
+            tabs = document.getElementsByClassName("tab");
+            for (i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+            
+            // Afficher le contenu de l'onglet sélectionné et marquer l'onglet comme actif
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+            
+            // Recharger les iframes pour s'assurer qu'elles s'affichent correctement
+            if (tabName === 'affectations') {
+                document.getElementById('affectations-iframe').src = 'affectation.html';
+            } else if (tabName === 'planning') {
+                document.getElementById('planning-iframe').src = 'planning.html';
+            }
+        }
 
-    <script src="script.js"></script>
+        // Ajuster la hauteur des iframes selon la taille de l'écran
+        function adjustIframeHeight() {
+            const iframes = document.querySelectorAll('.iframe-container');
+            const windowHeight = window.innerHeight;
+            const headerHeight = document.querySelector('.header').offsetHeight;
+            const tabsHeight = document.querySelector('.tabs').offsetHeight;
+            const padding = 40; // padding du body
+            
+            const availableHeight = windowHeight - headerHeight - tabsHeight - padding;
+            
+            iframes.forEach(iframe => {
+                iframe.style.height = Math.max(400, availableHeight) + 'px';
+            });
+        }
+
+        // Ajuster la hauteur au chargement et au redimensionnement
+        window.addEventListener('load', adjustIframeHeight);
+        window.addEventListener('resize', adjustIframeHeight);
+    </script>
 </body>
 </html>
-
