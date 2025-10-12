@@ -325,11 +325,11 @@
             <h3>Légende</h3>
             <div class="legend-item">
                 <div class="legend-color assigned"></div>
-                <span>Creneau assigné</span>
+                <span>Créneau assigné</span>
             </div>
             <div class="legend-item">
                 <div class="legend-color empty"></div>
-                <span>Creneau sans assignation</span>
+                <span>Créneau sans assignation</span>
             </div>
         </div>
     </div>
@@ -552,12 +552,12 @@ mercredi 24 décembre 2025;15h30-18h;GOMEZ Téo;UV3`;
             };
             
             const firstDayOfMonth = {
-                'octobre': 3, // 1er octobre 2025 est un mercredi
-                'novembre': 6, // 1er novembre 2025 est un samedi
-                'décembre': 1  // 1er décembre 2025 est un lundi
+                'octobre': 2, // 1er octobre 2025 est un mercredi (position 2 dans le calendrier français)
+                'novembre': 5, // 1er novembre 2025 est un samedi (position 5 dans le calendrier français)
+                'décembre': 0  // 1er décembre 2025 est un lundi (position 0 dans le calendrier français)
             };
             
-            const dayHeaders = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+            const dayHeaders = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
             
             months.forEach(month => {
                 const monthDiv = document.createElement('div');
