@@ -552,7 +552,7 @@ mercredi 24 décembre 2025;15h30-18h;GOMEZ Téo;UV3`;
             };
             
             const firstDayOfMonth = {
-                'octobre': 2, // 1er octobre 2025 est un mercredi (position 2 dans le calendrier français)
+                'octobre': 0, // 27 octobre 2025 est un lundi (position 0 dans le calendrier français)
                 'novembre': 5, // 1er novembre 2025 est un samedi (position 5 dans le calendrier français)
                 'décembre': 0  // 1er décembre 2025 est un lundi (position 0 dans le calendrier français)
             };
@@ -590,7 +590,9 @@ mercredi 24 décembre 2025;15h30-18h;GOMEZ Téo;UV3`;
                 }
                 
                 // Cellules des jours du mois
-                for (let day = 1; day <= daysInMonth[month]; day++) {
+                const startDay = month === 'octobre' ? 27 : 1;
+                const endDay = month === 'octobre' ? 31 : (month === 'décembre' ? 28 : daysInMonth[month]);
+                for (let day = startDay; day <= endDay; day++) {
                     const dayDiv = document.createElement('div');
                     dayDiv.className = 'day-cell';
                     
